@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ariel_inflow 七日習慣養成</title>
+  <!-- 引入 Tailwind CSS (樣式網頁美化) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 狀態儲存與資料初始化腳本 (必須放在 Alpine.js 載入之前以避免未定義錯誤) -->
+  <script>
+    function habitApp() {
+      return {
+        header: {
+          title: 'Ariel_inflow',
+          subtitle: '七日習慣養成 ✅',
+          description: 'Find your flow and live better!'
+        },
+        goals: [
+          {
+            id: 1,
+            color: 'bg-blue-600',
+            title: '【目標 1】',
+            icon: '🏃‍♀️',
+            action: '每日運動 10 分鐘',
+            subtasks: [
+              { id: 11, text: '回家直接動', done: true },
+              { id: 12, text: '不坐沙發', done: true }
+            ],
+            progress: [true, true, false, false, false, false, false]
+          },
+          {
+            id: 2,
+            color: 'bg-blue-600',
+            title: '【目標 2】',
+            icon: '🌙',
+            action: '12:00 前上床',
+            subtasks: [
+              { id: 21, text: '23:30 熄燈提醒', done: true },
+              { id: 22, text: '放下手機', done: true }
+            ],
+            progress: [true, true, true, false, false, false, false]
+          },
+          {
+            id: 3,
+            color: 'bg-blue-600',
+            title: '【目標 3】',
+            icon: '💧',
+            action: '喝水 2500cc',
+            subtasks: [
+              { id: 31, text: '水壺放眼前', done: true },
+              { id: 32, text: '正字號記錄', done: true }
+            ],
+            progress: [true, true, true, true, false, false, false]
+          }
+        ],
+        streakText: {
+          line1: '🔥 連續紀錄 Streak: 3 Days',
+          line2: '🎁 完成 5/7 → 小獎勵',
+          line3: '🏆 完成 7/7 → 完成挑戰'
+        },
+        footer: {
+          title: '【底部激勵】',
+          color: 'bg-yellow-400',
+          message: '🔥 你已經在變強的路上',
+          slogan: 'Keep Going !'
+        },
+
+        // 初始化：加載快取資料並啟動偵聽
+        initData() {
+          const cachedHeader = localStorage.getItem('habit_header_v2');
+          const cachedGoals = localStorage.getItem('habit_goals_v2');
+          const cachedStreak = localStorage.getItem('habit_streak_v2');
+          const cachedFooter = localStorage.getItem('habit_footer_v2');
+
+          if (cachedHeader) this.header = JSON.parse(cachedHeader);
+          if (cachedGoals) this.goals = JSON.parse(cachedGoals);
+          if (cachedStreak) this.streakText = JSON.parse(cachedStreak);
+          if (cachedFooter) this.footer = JSON.parse(cachedFooter);
+
+          // 監控文字框輸入隨時存檔
+          this.$watch('header', () => this.saveData());
+          this.$watch('goals', () => this.saveData());
+          this.$watch('streakText', () => this.saveData());
+          this.$watch('footer', () => this.saveData());
+        },
+
+        // 手動存檔
+        saveData() {
+          localStorage.setItem('habit_header_v2', JSON.stringify(this.header));
+          localStorage.setItem('habit_goals_v2', JSON.stringify(this.goals));
+          localStorage.setItem('habit_streak_v2', JSON.stringify(this.streakText));
+          localStorage.setItem('habit_footer_v2', JSON.stringify(this.footer));
+        }
+      }
+    }
+  </script>
+
+  <!-- 引入 Alpine.js (加上 defer 確保在 DOM 與自訂 script 解析完成後才執行初始化) -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* 讓輸入框在聚焦時有好看的圓角與外框 */
+    input:focus {
+      background-color: white !important;
+      border-color: #3b82f6 !important;
+      outline: none;
+    }
+  </style>
+</head>
+<body class="bg-[#FFF7DA] text-blue-950 font-sans min-h-screen relative overflow-x-hidden selection:bg-blue-100">
+
+  <!-- Alpine.js 資料中心與自動存檔邏輯 -->
+  <div 
+    x-data="habitApp()" 
+    x-init="initData()"
+    class="relative min-h-screen flex justify-center py-10 px-4 z-10"
+  >
+    
+    <!-- 雙層漸層模糊背景圖層 -->
+    <div class="fixed inset-0 pointer-events-none z-0 flex justify-center items-center overflow-hidden">
+      <!-- 背景圖片：預設載入你上傳的 image_5287fe.png，若載入失敗則自動備份使用線上海洋圖 -->
+      <img 
+        src="image_5287fe.png" 
+        alt="好流計畫背景" 
+        class="w-full h-full max-w-4xl object-contain opacity-50 mix-blend-multiply scale-110"
+        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1200&q=80';"
+      />
+      <!-- 徑向遮罩：讓方形圖片邊緣平滑淡出，融入黃色背景 -->
+      <div 
+        class="absolute inset-0"
+        style="background: radial-gradient(circle at center, transparent 15%, #FFF7DA 70%);"
+      ></div>
+    </div>
+
+    <!-- 主體內容 -->
+    <div class="w-full max-w-md relative z-10">
+      
+      <!-- 頂部標題區 -->
+      <div class="text-center mb-8 flex flex-col items-center gap-1">
+        <input 
+          type="text" 
+          x-model="header.title"
+          class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 py-0.5 text-[2.2rem] font-medium text-[#2F448C] tracking-wider text-center w-full transition-colors"
+        />
+        <div class="flex items-center justify-center w-full">
+          <input 
+            type="text" 
+            x-model="header.subtitle"
+            class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 py-0.5 text-[2.5rem] font-bold text-[#1C284F] tracking-tight text-center w-full transition-colors"
+          />
+        </div>
+        <input 
+          type="text" 
+          x-model="header.description"
+          class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 py-0.5 text-xl font-medium text-[#29364F] mt-1 text-center w-full transition-colors"
+        />
+      </div>
+
+      <!-- 目標清單列表 -->
+      <div class="flex flex-col gap-6">
+        <template x-for="(goal, index) in goals" :key="goal.id">
+          <div class="flex flex-col gap-3">
+            
+            <!-- 白色目標卡片 -->
+            <div class="bg-white/95 rounded-[1.5rem] shadow-sm py-4 px-5 flex justify-between items-center backdrop-blur-[2px]">
+              
+              <!-- 左側：目標與主行動 -->
+              <div class="flex flex-col gap-3 w-3/5">
+                <div class="flex items-center font-bold text-blue-900 text-lg">
+                  <div :class="`w-5 h-5 ${goal.color} rounded-sm mr-2 flex-shrink-0`"></div>
+                  <input 
+                    type="text" 
+                    x-model="goal.title"
+                    class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 w-full font-extrabold tracking-wide transition-colors"
+                  />
+                </div>
+                <div class="flex items-center text-xl font-bold text-gray-800">
+                  <input 
+                    type="text" 
+                    x-model="goal.icon"
+                    class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 w-8 text-center transition-colors"
+                  />
+                  <input 
+                    type="text" 
+                    x-model="goal.action"
+                    class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 w-full transition-colors"
+                  />
+                </div>
+              </div>
+
+              <!-- 右側：子任務 -->
+              <div class="flex flex-col gap-2 w-2/5 pl-2">
+                <template x-for="sub in goal.subtasks" :key="sub.id">
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      @click="sub.done = !sub.done; saveData()"
+                      class="w-5 h-5 rounded flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition-colors flex-shrink-0"
+                    >
+                      <span x-show="sub.done" class="text-gray-800 text-sm font-bold">✓</span>
+                    </button>
+                    <input 
+                      type="text" 
+                      x-model="sub.text"
+                      class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-sm font-bold text-gray-800 w-full transition-colors"
+                    />
+                  </div>
+                </template>
+              </div>
+
+            </div>
+
+            <!-- 下方進度打卡條 -->
+            <div class="flex items-center justify-between px-2">
+              <div class="flex gap-2.5">
+                <template x-for="(isDone, dayIndex) in goal.progress" :key="dayIndex">
+                  <button
+                    @click="goal.progress[dayIndex] = !goal.progress[dayIndex]; saveData()"
+                    :class="`w-9 h-9 rounded-md transition-colors duration-200 shadow-sm ${isDone ? 'bg-[#1C326E]' : 'bg-[#CFD2DA]'} hover:opacity-80`"
+                  ></button>
+                </template>
+              </div>
+              <div class="text-xl font-extrabold text-blue-950" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
+            </div>
+
+            <!-- 連續紀錄（僅在第二個目標下方顯示） -->
+            <template x-if="index === 1">
+              <div class="flex flex-col items-end pr-4 text-sm font-bold text-gray-800 my-1 leading-snug">
+                <input type="text" x-model="streakText.line1" class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-right w-64 transition-colors" />
+                <input type="text" x-model="streakText.line2" class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-right w-64 transition-colors" />
+                <input type="text" x-model="streakText.line3" class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-right w-64 transition-colors" />
+              </div>
+            </template>
+
+          </div>
+        </template>
+      </div>
+
+      <!-- 底部激勵語錄 -->
+      <div class="mt-8 flex flex-col gap-2 px-2">
+        <div class="flex items-center font-bold text-blue-900 text-lg">
+          <div :class="`w-5 h-5 ${footer.color} rounded-sm mr-2 flex-shrink-0`"></div>
+          <input 
+            type="text" 
+            x-model="footer.title"
+            class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 w-full font-extrabold tracking-wide transition-colors"
+          />
+        </div>
+        <input 
+          type="text" 
+          x-model="footer.message"
+          class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-xl font-bold text-gray-800 w-full transition-colors"
+        />
+        <input 
+          type="text" 
+          x-model="footer.slogan"
+          class="bg-transparent border border-transparent hover:border-gray-300 rounded px-1 text-2xl font-black text-blue-950 tracking-wide w-full mt-1 transition-colors"
+        />
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
