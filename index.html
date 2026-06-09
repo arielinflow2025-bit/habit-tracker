@@ -249,24 +249,25 @@
             </div>
 
           </div>
-
-          <!-- 下方進度打卡條 -->
-          <!-- 下方進度打卡條 (全覆蓋深藍風格) -->
+        <!-- 下方進度打卡條 (強化立體感版) -->
           <div class="flex items-center justify-between px-2 mt-2">
             <div class="flex space-x-2">
               <template x-for="(isDone, dayIndex) in goal.progress" :key="dayIndex">
                 <button
                   @click="goal.progress[dayIndex] = !goal.progress[dayIndex]; saveData()"
-                  :class="`w-9 h-9 rounded-lg transition-all duration-300 shadow-sm border-2 
+                  :class="`w-9 h-9 rounded-lg transition-all duration-300 transform active:scale-90 shadow-inner border-b-4 
                   ${isDone 
-                    ? 'bg-[#1C326E] border-[#1C326E] shadow-md' 
-                    : 'bg-[#CFD2DA] border-[#CFD2DA] hover:bg-[#B8BDC9]'}`"
+                    ? 'bg-[#1C326E] border-[#102048] shadow-lg ring-2 ring-blue-300' 
+                    : 'bg-[#CFD2DA] border-[#A0A4B0] shadow-sm hover:bg-[#D8DBE2]'}`"
                 >
-                  <!-- 完成時顯示白色勾選圖示，強調覆蓋感 -->
-                  <span x-show="isDone" class="text-white font-black text-xs">✓</span>
+                  <!-- 如果完成，顯示一個小小的亮點效果 -->
+                  <div x-show="isDone" class="w-2 h-2 bg-blue-200 rounded-full mx-auto opacity-50"></div>
                 </button>
               </template>
             </div>
+            <!-- 完成數數字也變得更醒目 -->
+            <div class="text-xl font-black text-[#1C326E] ml-3 bg-white/50 px-3 py-1 rounded-full shadow-inner" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
+          </div>
             <!-- 完成計數器對應深藍主題 -->
             <div class="text-xl font-black text-[#1C326E] ml-3" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
           </div>
