@@ -251,16 +251,16 @@
           </div>
 
           <!-- 下方進度打卡條 -->
-          <div class="flex items-center justify-between px-2">
-            <div class="flex space-x-2.5">
+          <div class="flex items-center justify-between px-2 mt-2">
+            <div class="flex space-x-2">
               <template x-for="(isDone, dayIndex) in goal.progress" :key="dayIndex">
                 <button
                   @click="goal.progress[dayIndex] = !goal.progress[dayIndex]; saveData()"
-                  :class="`w-9 h-9 rounded-md transition-colors duration-200 shadow-sm ${isDone ? 'bg-[#1C326E]' : 'bg-[#CFD2DA]'} hover:opacity-80`"
+                  :class="`w-9 h-9 rounded-md transition-all duration-200 shadow-sm ${isDone ? 'bg-[#1C326E] ring-2 ring-blue-200' : 'bg-[#CFD2DA]'} hover:scale-105 active:scale-95`"
                 ></button>
               </template>
             </div>
-            <div class="text-xl font-extrabold text-blue-950" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
+            <div class="text-xl font-extrabold text-blue-950 ml-2" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
           </div>
 
           <!-- 連續紀錄（僅在第二個目標下方顯示） -->
