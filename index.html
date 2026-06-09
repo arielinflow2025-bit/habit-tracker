@@ -251,23 +251,25 @@
           </div>
 
           <!-- 下方進度打卡條 -->
-          <!-- 下方進度打卡條 (僅變更完成格子為深藍色) -->
+          <!-- 下方進度打卡條 (全覆蓋深藍風格) -->
           <div class="flex items-center justify-between px-2 mt-2">
             <div class="flex space-x-2">
               <template x-for="(isDone, dayIndex) in goal.progress" :key="dayIndex">
                 <button
                   @click="goal.progress[dayIndex] = !goal.progress[dayIndex]; saveData()"
-                  :class="`w-9 h-9 rounded-md transition-all duration-300 border 
+                  :class="`w-9 h-9 rounded-lg transition-all duration-300 shadow-sm border-2 
                   ${isDone 
-                    ? 'bg-[#1C326E] border-[#1C326E]' 
-                    : 'bg-[#CFD2DA] border-[#B0B4BE]'}`"
-                ></button>
+                    ? 'bg-[#1C326E] border-[#1C326E] shadow-md' 
+                    : 'bg-[#CFD2DA] border-[#CFD2DA] hover:bg-[#B8BDC9]'}`"
+                >
+                  <!-- 完成時顯示白色勾選圖示，強調覆蓋感 -->
+                  <span x-show="isDone" class="text-white font-black text-xs">✓</span>
+                </button>
               </template>
             </div>
-            <!-- 計數器數字維持與深藍色調呼應 -->
+            <!-- 完成計數器對應深藍主題 -->
             <div class="text-xl font-black text-[#1C326E] ml-3" x-text="`${goal.progress.filter(Boolean).length}/7`"></div>
           </div>
-
           <!-- 連續紀錄（僅在第二個目標下方顯示） -->
           <template x-if="index === 1">
             <div class="flex flex-col items-end pr-4 text-sm font-bold text-gray-800 my-1 leading-snug">
